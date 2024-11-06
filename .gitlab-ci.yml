@@ -13,7 +13,7 @@ linux:
   script:
     - curl -sSL https://get.docker.com/ | sh
     - python -m pip install cibuildwheel==2.21.3
-    - cibuildwheel --output-dir wheelhouse
+    - cibuildwheel --output-dir wheelhouse --skip-auditwheel
   artifacts:
     paths:
       - wheelhouse/
