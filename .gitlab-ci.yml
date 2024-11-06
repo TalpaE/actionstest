@@ -1,47 +1,45 @@
-stages:
-  - build
-  - test
-  - release
+linux:
+  image: python:3.12
+  # make a docker daemon available for cibuildwheel to use
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - curl -sSL https://get.docker.com/ | sh
+    - python -m pip install cibuildwheel==2.21.3
+    - cibuildwheel --output-dir wheelhouse
+  artifacts:
+    paths:
+      - wheelhouse/
 
-variables:
-  FORCE_COLOR: "3"
-
-default:
+windows:
+  image: mcr.microsoft.com/windows/servercore:1809
   before_script:
-    - git submodule update --init --recursive
-
-concurrency:
-  group: $CI_PIPELINE_ID
-  cancel-in-progress: true
-
-build_sdist:
-  stage: build
-  image: python:3.9
+    - choco install python -y --version 3.12.4
+    - choco install git.install -y
+    - py -m pip install cibuildwheel==2.21.3
   script:
-    - pip install pipx
-    - pipx install build
-    - pipx run build --sdist
-    - pipx install twine
-    - pipx run twine check dist/*
+    - py -m cibuildwheel --output-dir wheelhouse --platform windows
   artifacts:
     paths:
-      - dist/*.tar.gz
-    expire_in: 1 week
+      - wheelhouse/
+  tags:
+    - saas-windows-medium-amd64
 
-build_wheels:
-  stage: build
-  parallel:
-    matrix:
-      - OS: "ubuntu-latest"
-      - OS: "macos-13"
-      - OS: "macos-latest"
-      - OS: "windows-latest"
+macos:
+  image: macos-14-xcode-15
+  before_script:
+    - python3 -m pip install cibuildwheel==2.21.3
   script:
-    - pip install pipx
-    - pipx install cibuildwheel
-    - CIBW_PRERELEASE_PYTHONS=true CIBW_ARCHS_WINDOWS="auto ARM64" pipx run cibuildwheel --output-dir wheelhouse
-    - git diff --exit-code
+    - python3 -m cibuildwheel --output-dir wheelhouse
   artifacts:
     paths:
-      - wheelhouse/*.whl
-    expire_in: 1 week
+      - wheelhouse/
+  tags:
+    - saas-macos-medium-m1
