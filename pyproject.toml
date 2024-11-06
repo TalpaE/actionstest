@@ -30,7 +30,7 @@ build.verbose = true
 logging.level = "INFO"
 
 [tool.cibuildwheel]
-build = "cp39-*"
+build-verbosity = 1
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
