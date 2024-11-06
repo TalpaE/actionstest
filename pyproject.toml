@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "example_package_JonSnowPatrol"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Anton Rikus", email="a.rikus@uni-muenster.de" },
 ]
@@ -31,6 +31,3 @@ logging.level = "INFO"
 
 [tool.cibuildwheel]
 build-verbosity = 1
-
-[tool.cibuildwheel.linux]
-archs = ["x86_64"]
