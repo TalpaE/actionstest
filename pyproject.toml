@@ -29,5 +29,8 @@ messages.after-failure = """
 build.verbose = true
 logging.level = "INFO"
 
-[tool.cibuildwheels]
+[tool.cibuildwheel]
 build = "cp39-*"
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
