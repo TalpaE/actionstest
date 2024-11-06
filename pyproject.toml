@@ -20,3 +20,9 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/pypa/sampleproject"
 Issues = "https://github.com/pypa/sampleproject/issues"
+
+[tool.scikit-build]
+messages.after-success = "{green}Wheel successfully built! Hooray!"
+messages.after-failure = """
+{bold.red}Sorry{normal}, build failed. Your platform is {platform.platform}. Better luck next time!
+"""
