@@ -1,21 +1,18 @@
-image: python:3.9
-
-stages:
-  - build
-
+image: python:3.12
+# make a docker daemon available for cibuildwheel to use
+services:
+  - name: docker:dind
+    entrypoint: ["env", "-u", "DOCKER_HOST"]
+    command: ["dockerd-entrypoint.sh"]
 variables:
-  CIBW_BUILD: "cp39-*"
-  CIBW_SKIP: "cp27-* pp*"
-  CIBW_MANYLINUX_X86_64_IMAGE: "manylinux2010"
-
-before_script:
-  - pip install cibuildwheel==2.3.0
-
-build_wheels:
-  stage: build
-  script:
-    - cibuildwheel --output-dir wheelhouse
-  artifacts:
-    paths:
-      - wheelhouse/*.whl
-    expire_in: 1 week
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  # See https://github.com/docker-library/docker/pull/166
+  DOCKER_TLS_CERTDIR: ""
+script:
+  - curl -sSL https://get.docker.com/ | sh
+  - python -m pip install cibuildwheel==2.21.3
+  - cibuildwheel --output-dir wheelhouse
+artifacts:
+  paths:
+    - wheelhouse/
