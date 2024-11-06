@@ -27,5 +27,5 @@ messages.after-failure = """
 {bold.red}Sorry{normal}, build failed. Your platform is {platform.platform}. Better luck next time!
 """
 
-[[tool.cibuildwheel.overrides]]
-select = "cp3{8,9}-*"
+[tool.cibuildwheels]
+build = "cp39-*"
