@@ -26,7 +26,7 @@ PYBIND11_MODULE(_core, m) {
 
            add
            subtract
-	   loseIt
+           loseIt
     )pbdoc";
 
     m.def("add", &add, R"pbdoc(

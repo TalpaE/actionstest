@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "example_package_JonSnowPatrol"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Anton Rikus", email="a.rikus@uni-muenster.de" },
 ]
@@ -26,3 +26,6 @@ messages.after-success = "{green}Wheel successfully built! Hooray!"
 messages.after-failure = """
 {bold.red}Sorry{normal}, build failed. Your platform is {platform.platform}. Better luck next time!
 """
+
+[[tool.cibuildwheel.linux]]
+select = "cp3{8,9}-*"

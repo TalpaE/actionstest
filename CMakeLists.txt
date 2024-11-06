@@ -23,5 +23,5 @@ target_link_libraries(_core PRIVATE pybind11::headers)
 target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
 # The install directory is the output (wheel) directory
-install(TARGETS _core DESTINATION packaging_tutorial)
+install(TARGETS _core DESTINATION example_package_JonSnowPatrol)
 message(STATUS "finished with the cmake step")
