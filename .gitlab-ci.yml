@@ -10,8 +10,6 @@ linux:
     DOCKER_DRIVER: overlay2
     # See https://github.com/docker-library/docker/pull/166
     DOCKER_TLS_CERTDIR: ""
-    CIBW_BUILD: cp39-*
-    CIBW_ARCHS: x86_64
   script:
     - curl -sSL https://get.docker.com/ | sh
     - python -m pip install cibuildwheel==2.21.3
