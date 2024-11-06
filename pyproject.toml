@@ -26,6 +26,8 @@ messages.after-success = "{green}Wheel successfully built! Hooray!"
 messages.after-failure = """
 {bold.red}Sorry{normal}, build failed. Your platform is {platform.platform}. Better luck next time!
 """
+build.verbose = true
+logging.level = "INFO"
 
 [tool.cibuildwheels]
 build = "cp39-*"
