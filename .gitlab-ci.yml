@@ -1,19 +1,47 @@
-linux:
-  image: python:3.12
-  # make a docker daemon available for cibuildwheel to use
-  services:
-    - name: docker:dind
-      entrypoint: ["env", "-u", "DOCKER_HOST"]
-      command: ["dockerd-entrypoint.sh"]
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-    # See https://github.com/docker-library/docker/pull/166
-    DOCKER_TLS_CERTDIR: ""
+stages:
+  - build
+  - test
+  - release
+
+variables:
+  FORCE_COLOR: "3"
+
+default:
+  before_script:
+    - git submodule update --init --recursive
+
+concurrency:
+  group: $CI_PIPELINE_ID
+  cancel-in-progress: true
+
+build_sdist:
+  stage: build
+  image: python:3.9
   script:
-    - curl -sSL https://get.docker.com/ | sh
-    - python -m pip install cibuildwheel==2.21.3
-    - cibuildwheel --output-dir wheelhouse
+    - pip install pipx
+    - pipx install build
+    - pipx run build --sdist
+    - pipx install twine
+    - pipx run twine check dist/*
   artifacts:
     paths:
-      - wheelhouse/
+      - dist/*.tar.gz
+    expire_in: 1 week
+
+build_wheels:
+  stage: build
+  parallel:
+    matrix:
+      - OS: "ubuntu-latest"
+      - OS: "macos-13"
+      - OS: "macos-latest"
+      - OS: "windows-latest"
+  script:
+    - pip install pipx
+    - pipx install cibuildwheel
+    - CIBW_PRERELEASE_PYTHONS=true CIBW_ARCHS_WINDOWS="auto ARM64" pipx run cibuildwheel --output-dir wheelhouse
+    - git diff --exit-code
+  artifacts:
+    paths:
+      - wheelhouse/*.whl
+    expire_in: 1 week
