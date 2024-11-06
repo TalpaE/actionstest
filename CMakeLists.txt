@@ -24,3 +24,4 @@ target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
 # The install directory is the output (wheel) directory
 install(TARGETS _core DESTINATION packaging_tutorial)
+message(STATUS "finished with the cmake step")
