@@ -31,3 +31,6 @@ logging.level = "INFO"
 
 [tool.cibuildwheel]
 build-verbosity = 1
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
