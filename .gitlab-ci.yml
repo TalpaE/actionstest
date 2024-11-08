@@ -13,7 +13,7 @@ before_script:
   - apt-get update && apt-get install -y -V libboost-all-dev
   - dpkg-query -L libboost-all-dev
   - dpkg-query -L libboost-math-dev
-  - dpkg-query -L *boost*
+  - grep -ir 'boost' /usr/include
   - pwd
   - ls
   - python -m pip install cibuildwheel==2.21.3 build
@@ -26,8 +26,8 @@ build_wheels:
       entrypoint: ["env", "-u", "DOCKER_HOST"]
       command: ["dockerd-entrypoint.sh"]
   script:
-    - export BOOST_ROOT=/usr/share/doc/libboost-all-dev/
-    - export Boost_DIR=/usr/share/doc/libboost-all-dev/
+    - export BOOST_ROOT=/usr/local/include/
+    # - export Boost_DIR=/usr/include/
     # - export BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
     - |+
       if [ -d "$BOOST_ROOT" ]; then echo "Boost include directory exists: $BOOST_ROOT"; else echo "Boost include directory does not exist: $BOOST_ROOT"; fi
