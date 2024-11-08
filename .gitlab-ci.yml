@@ -23,6 +23,7 @@ build_wheels:
   script:
     - export BOOST_ROOT=/usr/local/include/boost
     # - export BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
+    - export Boost_DIR=/usr/local/include/boost
     - locate boost
     - |+
        if [ -d "$BOOST_ROOT" ];
