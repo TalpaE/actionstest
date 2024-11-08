@@ -11,6 +11,7 @@ variables:
 before_script:
   - curl -sSL https://get.docker.com/ | sh
   - apt-get update && apt-get install -y -V libboost-all-dev
+  - dpkg-query -L libboost-all-dev
   - python -m pip install cibuildwheel==2.21.3 build
 
 build_wheels:
@@ -21,17 +22,12 @@ build_wheels:
       entrypoint: ["env", "-u", "DOCKER_HOST"]
       command: ["dockerd-entrypoint.sh"]
   script:
-    - export BOOST_ROOT=/usr/local/include/boost
-    # - export BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
-    - export Boost_DIR=/usr/local/include/boost
+    - export BOOST_ROOT=/usr/include/boost
+    - export BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
     - |+
-       if [ -d "$BOOST_ROOT" ];
-       then echo "Boost include directory exists: $BOOST_ROOT"
-       else echo "Boost include directory does not exist: $BOOST_ROOT"; fi
+      if [ -d "$BOOST_ROOT" ]; then echo "Boost include directory exists: $BOOST_ROOT"; else echo "Boost include directory does not exist: $BOOST_ROOT"; fi
     - |+
-      if [ -d "$BOOST_LIBRARYDIR" ];
-      then echo "Boost library directory exists: $BOOST_LIBRARYDIR";
-      else echo "Boost library directory does not exist: $BOOST_LIBRARYDIR"; fi
+      if [ -d "$BOOST_LIBRARYDIR" ]; then echo "Boost library directory exists: $BOOST_LIBRARYDIR"; else echo "Boost library directory does not exist: $BOOST_LIBRARYDIR"; fi
     - cibuildwheel --output-dir wheelhouse
   artifacts:
     paths:
