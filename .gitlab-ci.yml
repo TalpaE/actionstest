@@ -12,7 +12,7 @@ before_script:
   - curl -sSL https://get.docker.com/ | sh
   - apt-get update && apt-get install -y -V libboost-all-dev
   - dpkg-query -L libboost-all-dev
-  - dpkq-query -L boost
+  - dpkg-query -L boost
   - python -m pip install cibuildwheel==2.21.3 build
 
 build_wheels:
