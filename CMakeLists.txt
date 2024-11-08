@@ -14,9 +14,10 @@ project(
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
+cmake_policy(SET CMP0167 OLD)
 # Boost
 message("-----Checking Boost-----")
-find_package(Boost CONFIG REQUIRED)
+find_package(Boost REQUIRED)
 
 # OpenMP
 message("-----Checking OpenMP-----")
