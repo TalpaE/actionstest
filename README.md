@@ -12,6 +12,15 @@ from example_package_JonSnowPatrol import example as ex
 
 ex.get_compliment()
 core.loseIt()
+core.maxThreads()
 ```
 
-Requirements are pybind11 and OpenMP.
+or alternatively
+```
+from example_package_JonSnowPatrol() import *
+get_compliment()
+loseIt()
+maxThreads()
+```
+
+Requirements are pybind11, OpenMP and now also Boost.
