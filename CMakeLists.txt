@@ -16,7 +16,7 @@ find_package(pybind11 CONFIG REQUIRED)
 
 # Boost
 message("-----Checking Boost-----")
-find_package(Boost CONFIG REQUIRED 1.66)
+find_package(Boost CONFIG REQUIRED 1.74 COMPONENTS boost)
 
 # OpenMP
 message("-----Checking OpenMP-----")
