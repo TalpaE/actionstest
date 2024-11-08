@@ -14,10 +14,15 @@ project(
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
+# OpenMP
+message("-----Checking OpenMP-----")
+find_package(OpenMP REQUIRED)
+
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
-python_add_library(_core MODULE src/main.cpp WITH_SOABI)
+pybind11_add_module(_core MODULE src/main.cpp WITH_SOABI)
 target_link_libraries(_core PRIVATE pybind11::headers)
+target_link_libraries(_core PRIVATE OpenMP::OpenMP_CXX)
 
 # This is passing in the version as a define just as an example
 target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})

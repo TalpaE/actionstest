@@ -13,3 +13,5 @@ from example_package_JonSnowPatrol import example as ex
 ex.get_compliment()
 core.loseIt()
 ```
+
+Requirements are pybind11 and OpenMP.
