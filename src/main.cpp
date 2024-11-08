@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <iostream>
 #include <omp.h>
+#include <boost/math/special_functions/binomial.hpp>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -15,6 +16,10 @@ void loseIt() {
 
 int maxThreads() {
     return omp_get_max_threads();
+}
+
+int binomial(int n, int k) {
+    return boost::math::binomial_coefficient<double>(n, k);
 }
 
 namespace py = pybind11;
@@ -33,6 +38,7 @@ PYBIND11_MODULE(_core, m) {
            subtract
            loseIt
            maxThreads
+           binomial
     )pbdoc";
 
     m.def("add", &add, R"pbdoc(
@@ -55,6 +61,11 @@ PYBIND11_MODULE(_core, m) {
         Get the maximum number of threads
 
         Returns the maximum number of threads that can be used.
+    )pbdoc");
+    m.def("binomial", &binomial, R"pbdoc(
+        Calculate the binomial coefficient
+
+        Returns the binomial coefficient of n and k.
     )pbdoc");
 
 #ifdef VERSION_INFO

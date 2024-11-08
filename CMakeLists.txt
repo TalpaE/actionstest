@@ -25,7 +25,7 @@ find_package(OpenMP REQUIRED)
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
 pybind11_add_module(_core MODULE src/main.cpp WITH_SOABI)
-target_link_libraries(_core PRIVATE pybind11::headers OpenMP::OpenMP_CXX Boost::boost)
+target_link_libraries(_core PUBLIC pybind11::headers OpenMP::OpenMP_CXX Boost::boost)
 
 #import_libxc()
 #target_link_libraries(_core PRIVATE xc)
