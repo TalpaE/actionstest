@@ -13,6 +13,7 @@ before_script:
   - apt-get update && apt-get install -y -V libboost-all-dev
   - dpkg-query -L libboost-all-dev
   - dpkg-query -L libboost-math-dev
+  - dpkg-query -L *boost*
   - pwd
   - ls
   - python -m pip install cibuildwheel==2.21.3 build
