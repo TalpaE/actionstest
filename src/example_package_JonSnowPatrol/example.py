@@ -1,5 +1,5 @@
-def add_one(number):
+def addOne(number):
     return number + 1
 
-def get_compliment():
+def getCompliment():
     print("You look lovely today!")

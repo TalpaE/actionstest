@@ -1,6 +1,6 @@
 # Require CMake 3.15+ (matching scikit-build-core) Use new versions of all
 # policies up to CMake 3.30
-cmake_minimum_required(VERSION 3.15...3.30)
+cmake_minimum_required(VERSION 3.15...3.29)
 
 # Scikit-build-core sets these values for you, or you can just hard-code the
 # name and version.
@@ -9,6 +9,8 @@ project(
   VERSION ${SKBUILD_PROJECT_VERSION}
   LANGUAGES CXX)
 
+set(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
 # Find the module development requirements (requires FindPython from 3.17 or
 # scikit-build-core's built-in backport)
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
@@ -16,7 +18,12 @@ find_package(pybind11 CONFIG REQUIRED)
 
 # Boost
 message("-----Checking Boost-----")
-find_package(Boost CONFIG REQUIRED 1.74 COMPONENTS boost)
+if (CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+  # use CMake's FindBoost.cmake instead of a configure file by boost (only available from Boost 1.70 onwards)
+  set(Boost_NO_BOOST_CMAKE ON)
+endif()
+find_package(Boost REQUIRED)
 
 # OpenMP
 message("-----Checking OpenMP-----")
@@ -24,11 +31,13 @@ find_package(OpenMP REQUIRED)
 
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
-pybind11_add_module(_core MODULE src/main.cpp WITH_SOABI)
+pybind11_add_module(_core MODULE OPT_SIZE src/main.cpp WITH_SOABI)
 target_link_libraries(_core PUBLIC pybind11::headers OpenMP::OpenMP_CXX Boost::boost)
 
-#import_libxc()
-#target_link_libraries(_core PRIVATE xc)
+# this looks inside the cmake directory for the ImportLibxc.cmake file
+include(ImportLibxc)
+import_libxc()
+target_link_libraries(_core PRIVATE xc)
 
 # This is passing in the version as a define just as an example
 target_compile_definitions(_core PRIVATE VERSION_INFO=${PROJECT_VERSION})

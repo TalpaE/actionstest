@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "example_package_JonSnowPatrol"
-version = "0.1.4"
+version = "0.1.5"
 authors = [
   { name="Anton Rikus", email="a.rikus@uni-muenster.de" },
 ]
@@ -28,6 +28,20 @@ messages.after-failure = """
 """
 build.verbose = true
 logging.level = "INFO"
+build-dir = "/WORK/a_riku01/PyPI/packaging_tutorial/skbuild/"
+
+[tool.scikit-build.cmake.define]
 
 [tool.cibuildwheel]
 build-verbosity = 1
+# Only build on CPython 3.9
+build = "cp39-*"
+
+[tool.cibuildwheel.linux]
+before-all = "yum install -y boost-devel"
+archs = ["x86_64"]
+
+# the yum command is not available on the musllinux image
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux*"
+before-all = "apk add boost-dev"
