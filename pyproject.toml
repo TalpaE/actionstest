@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "example_package_JonSnowPatrol"
-version = "0.1.7"
+version = "0.1.8"
 authors = [
   { name="Anton Rikus", email="a.rikus@uni-muenster.de" },
 ]
@@ -31,10 +31,9 @@ logging.level = "INFO"
 build-dir = "/WORK/a_riku01/PyPI/packaging_tutorial/skbuild/"
 
 [tool.scikit-build.cmake.define]
-#HDF5_INCLUDE_DIRS="/usr/local/h5/include"
-#HDF5_LIBRARIES="/usr/local/h5/lib"
 HDF5_ROOT="/usr/local/h5"
 USEBOOST = false
+USEHDF5 = false
 
 [tool.cibuildwheel]
 build-verbosity = 1
@@ -43,18 +42,18 @@ build = "cp39-*"
 
 [tool.cibuildwheel.linux]
 # yum install -y boost-devel hdf5-devel
+#wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/#hdf5-1.12.0/src/hdf5-1.12.0.tar.bz2
+#tar --bzip2 -xf hdf5-1.12.0.tar.bz2
+#cd hdf5-1.12.0
+#./configure --prefix=/usr/local/h5 --enable-cxx
+#make -j 8
+#make install -j 8
+#cd ..
+#export PATH=/usr/local/h5/bin:$PATH
+#which h5c++
+#h5cc -showconfig
 before-all = """
 yum install -y wget tar bzip2
-wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.0/src/hdf5-1.12.0.tar.bz2
-tar --bzip2 -xf hdf5-1.12.0.tar.bz2
-cd hdf5-1.12.0
-./configure --prefix=/usr/local/h5 --enable-cxx
-make -j 8
-make install -j 8
-cd ..
-export PATH=/usr/local/h5/bin:$PATH
-which h5c++
-h5cc -showconfig
 """
 archs = ["x86_64"]
 skip = ["*-musllinux_x86_64"]

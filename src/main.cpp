@@ -5,8 +5,10 @@
 #include <boost/math/special_functions/binomial.hpp>
 #endif
 #include <xc.h>
+#ifdef USEHDF5
 #include <H5Cpp.h>
 #include <hdf5.h>
+#endif
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -33,9 +35,11 @@ void libxcversion() {
     std::cout << "libxc version: " << xc_version_string() << std::endl;
 }
 
+#ifdef USEHDF5
 void writeH5File(std::string name) {
     H5::H5File file("aCoolFile.h5", H5F_ACC_TRUNC);
 }
+#endif
 
 namespace py = pybind11;
 
@@ -91,11 +95,13 @@ PYBIND11_MODULE(_core, m) {
 
         Prints the version of libxc.
     )pbdoc");
+    #ifdef USEHDF5
     m.def("writeH5File", &writeH5File, R"pbdoc(
         Write an HDF5 file
 
         Writes an HDF5 file with a single number.
     )pbdoc");
+    #endif
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
