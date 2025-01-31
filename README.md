@@ -26,6 +26,7 @@ getCompliment()
 loseIt()
 maxThreads()
 libxcversion()
+writeH5File("myFile")
 ```
 
 Requirements are pybind11, OpenMP and now also Boost.

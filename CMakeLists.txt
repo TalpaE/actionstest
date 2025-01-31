@@ -16,6 +16,8 @@ set(CMAKE_MODULE_PATH  ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
+option(USEBOOST "Use Boost" ON)
+if (USEBOOST)
 # Boost
 message("-----Checking Boost-----")
 if (CMP0167)
@@ -24,15 +26,28 @@ if (CMP0167)
   set(Boost_NO_BOOST_CMAKE ON)
 endif()
 find_package(Boost REQUIRED)
+endif()
 
 # OpenMP
 message("-----Checking OpenMP-----")
 find_package(OpenMP REQUIRED)
 
+message("-----Checking HDF5-----")
+include(CMakePrintHelpers)
+cmake_print_variables(HDF5_INCLUDE_DIRS HDF5_LIBRARIES HDF5_ROOT)
+set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE TRUE)
+set(HDF5_FIND_DEBUG TRUE)
+find_package(HDF5 REQUIRED COMPONENTS HL CXX)
+
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
-pybind11_add_module(_core MODULE OPT_SIZE src/main.cpp WITH_SOABI)
-target_link_libraries(_core PUBLIC pybind11::headers OpenMP::OpenMP_CXX Boost::boost)
+pybind11_add_module(_core MODULE OPT_SIZE src/main.cpp)
+if (USEBOOST)
+  target_compile_definitions(_core PRIVATE USEBOOST)
+  target_link_libraries(_core PUBLIC pybind11::headers OpenMP::OpenMP_CXX Boost::boost hdf5_cpp-shared)
+else()
+  target_link_libraries(_core PUBLIC pybind11::headers OpenMP::OpenMP_CXX hdf5_cpp-shared)
+endif()
 
 # this looks inside the cmake directory for the ImportLibxc.cmake file
 include(ImportLibxc)
