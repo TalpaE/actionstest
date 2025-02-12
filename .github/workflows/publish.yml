@@ -1,0 +1,76 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+        ports:
+          - 2375:2375
+        env:
+          DOCKER_TLS_CERTDIR: ""
+
+    env:
+      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_DRIVER: overlay2
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y -V libboost-all-dev
+          python -m pip install --upgrade pip
+          python -m pip install cibuildwheel==2.21.3 build
+
+      - name: Build wheels
+        run: |
+          export BOOST_ROOT=/usr/local/include/
+          export Boost_DIR=/usr/include/
+          if [ -d "$BOOST_ROOT" ]; then echo "Boost include directory exists: $BOOST_ROOT"; else echo "Boost include directory does not exist: $BOOST_ROOT"; fi
+          cibuildwheel --output-dir wheelhouse
+
+      - name: Build source distribution
+        run: python -m build --sdist --outdir dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheelhouse
+          path: wheelhouse/*.whl
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testpypi
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: wheelhouse
+          path: wheelhouse
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
